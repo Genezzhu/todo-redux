@@ -10,32 +10,39 @@ reducer(改变全局state),
 
 第一步：
 在index.js外面创建全局store， 并且把下面的组件用context的方式传下去
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+·import { Provider } from 'react-redux';·
+·import { createStore } from 'redux';·
 
 //rootReducer是来定位存放reducer里面index.js的位置
-import rootReducer from './reducers';
+·import rootReducer from './reducers';·
 
 //初始化store
-let initialStore = {
-
-};
+```jsx
+let initialStore = {};
+```
 
 //定义store
+```jsx
 const store = createStore(rootReducer, initialStore);
+```
 
+```jsx
 ReactDOM.render(<Provider store={store}>
         <App />
     </Provider>, document.getElementById('root'));
+```
 
 第二步：
 在component里面
 
 //引用
+```jsx
 import { connect } from "react-redux";
 import { changeUserName, toggleStatus } from "./actions";
+```
 
 //把全局state转化成Props
+``` jsx
 function mapStateToProps (state) {
     const {todo} = state;
     return {
@@ -43,8 +50,11 @@ function mapStateToProps (state) {
         filter: todo.filter,
     };
 }
+```
 
+···
 把action转化成props
+```jsx
 const mapDispatchToProps = {
     updateTodo,
     deleteTodo,
@@ -52,22 +62,27 @@ const mapDispatchToProps = {
     updateShowClear,
     updateRemainingItems,
 };
+```
 
+```jsx
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
+```
 
 第三步
 在action里面
 
 index.js
-export * from './你创建的对象的action'
+
+export * from './你创建的对象的action
 
 todo.js
 
 //定义常量， 可以再reducer里面引用， 不会因为typo而出错， 记得要export常量
+```jsx
 export const ADD_TODO = "ADD_TODO";
 export const UPDATE_TODO = "UPDATE_TODO";
-
-
+```
+```jsx
 export function addTodo ({todo}) {
     return {
         type: ADD_TODO,
@@ -75,18 +90,21 @@ export function addTodo ({todo}) {
     };
 }
 
+
 export function updateTodo ({todo}) {
     return {
         type: UPDATE_TODO,
         todo,
     };
 }
+```
 
 第四步
 
 在reducer里
 index.js
 //引用
+```jsx
 import { combineReducers } from "redux";
 import todo from "./todo";
 
@@ -94,9 +112,11 @@ export default combineReducers({
     todo,
     //把所有要用的reducer扔到combineReducers里面来
 });
+```
 
 todo.js
 //引用常量 - 在action里面定义的！
+```jsx
 import {
     ADD_TODO,
     UPDATE_TODO,
@@ -109,6 +129,7 @@ import {
 } from "../actions";
 
 //初始化state
+
 const initialState = {
     todoList : [
         {id: 1, isCompleted: true, content: '吃饭'},
@@ -119,7 +140,8 @@ const initialState = {
     remainingItems : 0,
     showClearButton : false,
 };
-
+```
+```jsx
 export const todo = (state = initialState, action) => {
     //console.log(action);
     switch (action.type) {
@@ -189,14 +211,16 @@ export const todo = (state = initialState, action) => {
 };
 
 export default todo;
-
+```
 最后一步， 返回component
 
 导入action
+```jsx
 import { updateTodo, deleteTodo, toggleAll, updateShowClear, updateRemainingItems } from '../actions';
+```
 
 把action放到mapDispatchToProps
-
+```jsx
 const mapDispatchToProps = {
     updateTodo,
     deleteTodo,
@@ -204,8 +228,9 @@ const mapDispatchToProps = {
     updateShowClear,
     updateRemainingItems,
 };
-
+```
 把需要用的state放到props里面
+```jsx
 function mapStateToProps (state) {
     const {todo} = state;
     //console.log('_______________________',todo);
@@ -214,12 +239,15 @@ function mapStateToProps (state) {
         filter: todo.filter,
     };
 }
+```
 
 在需要用的地方解构
+```jsx
 const { todoList, filter } = this.props;
+```
 
 在事件函数里面调用action
-
+```jsx
     valueHandler = (e, todo) => {
         const { updateTodo } = this.props;
         todo.content = e.target.value;
@@ -230,7 +258,7 @@ const { todoList, filter } = this.props;
             isEditing: true,
         });
     };
-
+```
 最后调试！
 调试中可以在不同的地方打印state，action，
 
